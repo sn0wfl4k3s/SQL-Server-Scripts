@@ -8,11 +8,11 @@ begin
 	declare @vIdUltimoCurso	int
 	declare @vExiste		int
 
-	select @vExiste =  [Id] from [Curso] where [Id] like @nome
+	select @vExiste =  [Id] from [Curso] where [Nome] like @nome
 
 	if @vExiste > 0
 		begin
-			select 'O curso j· existe! GravaÁ„o n„o realizada' as retorno
+			select 'O curso j√° existe! Grava√ß√£o n√£o realizada' as retorno
 		end
 	else
 		begin

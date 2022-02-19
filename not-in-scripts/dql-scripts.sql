@@ -1,0 +1,11 @@
+USE [V1-2022]
+
+-- TIRAR AGENDAMENTOS EM FERIADOS
+SELECT *
+FROM [dbo].[Agendamento] AS A
+WHERE NOT EXISTS (
+	SELECT F.Dia, F.Mes
+	FROM [dbo].[Feriado] AS F
+	WHERE F.DIA = DAY(A.Data) AND F.Mes = MONTH(A.Data))
+
+GO

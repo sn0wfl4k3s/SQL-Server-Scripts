@@ -4,11 +4,11 @@ SELECT
 	U.Nome
 	,U.CPF
 	,S.Descricao
-	,FORMAT(S.DataInclusao, 'dddd, dd \de MMMM \de yyyy  ‡\s hh:mm tt', 'pt-br') as Quando
+	,FORMAT(S.DataInclusao, 'dddd, dd \de MMMM \de yyyy  √†\s hh:mm tt', 'pt-br') as Quando
 	,CONCAT(DATEDIFF(YEAR, U.DataNascimento, GETDATE()), ' anos') AS Idade
-	,CASE WHEN U.Ativo = 1 THEN 'Sim' ELSE 'N„o' END AS Ativo
-	,CASE WHEN DATEDIFF(YEAR, U.DataNascimento, GETDATE()) > 17 THEN 'Sim' ELSE 'N„o' END AS 'Adulto'
-	,CONCAT(CAST(E.Classificacao AS DECIMAL(10, 2)), ' pontos') AS 'ClassificaÁ„o'
+	,CASE WHEN U.Ativo = 1 THEN 'Sim' ELSE 'N√£o' END AS Ativo
+	,CASE WHEN DATEDIFF(YEAR, U.DataNascimento, GETDATE()) > 17 THEN 'Sim' ELSE 'N√£o' END AS 'Adulto'
+	,CONCAT(CAST(E.Classificacao AS DECIMAL(10, 2)), ' pontos') AS 'Classifica√ß√£o'
 FROM Usuario U (NOLOCK)
 INNER JOIN Solicitacao S (NOLOCK) ON S.IdUsuario = U.Id
 INNER JOIN Experiencia E (NOLOCK) ON E.IdUsuario = U.Id
@@ -20,3 +20,8 @@ GROUP BY U.Nome, U.CPF, S.Descricao, S.DataInclusao, U.DataNascimento, U.Ativo, 
 --SELECT MIN(DATEDIFF(YEAR, U.DataNascimento, GETDATE())) AS 'MAIS NOVO' FROM Usuario U
 --SELECT MAX(DATEDIFF(YEAR, U.DataNascimento, GETDATE())) AS 'MAIS VELHO' FROM Usuario U
 --SELECT AVG(DATEDIFF(YEAR, U.DataNascimento, GETDATE())) AS 'MEDIA DAS IDADES' FROM Usuario U
+
+-- DISTINCT IN ONLY ONE COLUMN
+SELECT Id, Descricao
+FROM Solicitacao
+WHERE Id in (SELECT MIN(Id) FROM Solicitacao GROUP BY Descricao)

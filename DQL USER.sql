@@ -25,3 +25,29 @@ GROUP BY U.Nome, U.CPF, S.Descricao, S.DataInclusao, U.DataNascimento, U.Ativo, 
 SELECT Id, Descricao
 FROM Solicitacao
 WHERE Id in (SELECT MIN(Id) FROM Solicitacao GROUP BY Descricao)
+
+
+with 
+	UniqueRecentDescritionTable(IdSolicitacao) as 
+		(select MAX(s.Id) from Solicitacao s group by s.Descricao),
+	SolicitacaoUsuarioTable(Nome, Descricao) as 
+		(select distinct 
+				u.Nome, 
+				s.Descricao 
+			from Solicitacao s
+			inner join Usuario u on s.IdUsuario = u.Id)
+select 
+	s.Descricao
+	,s.DataInclusao
+	,s.Id as IdSolicitacao
+	,u.Nome as 'Último usuário que solicitou'
+	,STUFF((select case when ss.Nome <> u.Nome
+			then ', ' + ss.Nome
+			else ' e ' + ss.Nome end
+		from SolicitacaoUsuarioTable ss
+		where ss.Descricao like s.Descricao
+		for xml path('')), 1, 2, '') as 'Usuários com a mesma solicitacao'
+from Solicitacao as s with(nolock)
+inner join Usuario as u with(nolock) on s.IdUsuario = u.Id
+inner join UniqueRecentDescritionTable as t with(nolock) on t.IdSolicitacao = s.Id
+order by DataInclusao desc

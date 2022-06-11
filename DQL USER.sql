@@ -26,7 +26,7 @@ SELECT Id, Descricao
 FROM Solicitacao
 WHERE Id in (SELECT MIN(Id) FROM Solicitacao GROUP BY Descricao)
 
-
+-- USING WITH TO SAVE TABLE DATA FOR NOT LOOP IN SAME TABLE A LOT OF TIMES
 with 
 	UniqueRecentDescritionTable(IdSolicitacao) as 
 		(select MAX(s.Id) from Solicitacao s group by s.Descricao),
